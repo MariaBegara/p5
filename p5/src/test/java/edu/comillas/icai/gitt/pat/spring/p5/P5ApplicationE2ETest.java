@@ -27,7 +27,8 @@ class P5ApplicationE2ETest {
     @Autowired
     TestRestTemplate client;
 
-    @Test public void registerTest() {
+    @Test
+    public void registerTest() {
         // Given ...
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -51,18 +52,45 @@ class P5ApplicationE2ETest {
                 response.getBody());
     }
 
+
     /**
      * TODO#11
      * Completa el siguiente test E2E para que verifique la
      * respuesta de login cuando se proporcionan credenciales correctas
      */
-    @Test public void loginOkTest() {
+    @Test
+    public void loginOkTest() {
         // Given ...
+        // Registrar usuario
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String registro = "{" +
+                "\"name\":\"" + NAME + "\"," +
+                "\"email\":\"" + EMAIL + "\"," +
+                "\"role\":\"" + Role.USER + "\"," +
+                "\"password\":\"" + PASS + "\"}";
+
+        // Se guarda en la base de datos
+        client.exchange(
+                "http://localhost:8080/api/users",
+                HttpMethod.POST, new HttpEntity<>(registro, headers), String.class);
+
+        // Crear la petición de login
+        String login = "{" +
+                "\"email\":\"" + EMAIL + "\"," +
+                "\"password\":\"" + PASS + "\"}";
+        headers = new HttpHeaders(); // reset headers
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
 
         // When ...
+        ResponseEntity<String> response = client.exchange(
+                "http://localhost:8080/api/users",
+                HttpMethod.POST, new HttpEntity<>(login, headers), String.class);
 
 
         // Then ...
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
     }
 }
