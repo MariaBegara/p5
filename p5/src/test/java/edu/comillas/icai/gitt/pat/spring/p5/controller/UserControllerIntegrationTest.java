@@ -28,7 +28,7 @@ class UserControllerIntegrationTest {
     @Test void registerOk() throws Exception {
         // Given ...
         Mockito.when(userService.profile(Mockito.any(RegisterRequest.class)))
-                .thenReturn(new ProfileResponse(NAME, EMAIL, Role.USER));
+                .thenReturn(new ProfileResponse(NAME, EMAIL, Role.USER)); // Solo es necesario si se queire controlar la respuesta del método
         String request = "{" +
                 "\"name\":\"" + NAME + "\"," +
                 "\"email\":\"" + EMAIL + "\"," +
@@ -53,12 +53,20 @@ class UserControllerIntegrationTest {
      * que se debe devolver cuando se intenta registrar con un password inseguro
      * (no cumple condiciones)
      */
+
     @Test void registerInvalidPassword() throws Exception {
-        // Given ...
-
+        // Given ... -> se prapara un JSON con contraseña inválida
+        String request = "{" +
+                "\"name\":\"" + NAME + "\"," +
+                "\"email\":\"" + EMAIL + "\"," +
+                "\"role\":\"" + Role.USER + "\"," +
+                "\"password\":\"aaaaA1\"}"; // Contraseña inválida
         // When ...
-
+        this.mockMvc
+                .perform(MockMvcRequestBuilders.post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
                 // Then ...
-
+                .andExpect(MockMvcResultMatchers.status().isBadRequest()); // BadRequest
     }
 }
