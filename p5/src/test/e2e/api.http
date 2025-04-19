@@ -1,27 +1,33 @@
 ### TODO#12
 ### Completa los ... de las siguientes peticiones por orden,
-### para probar el API con el plugin REST CLIENT de VsCode
+### para probar el API con el plugin REST CLIENT de VsCode:
+// Esto permite hacer pruebas desde el editor: hacer peticiones HTTP
+// como hacíamos con Postman, pero directtamente como texto.
+
 
 ### Create user
-
-POST http://localhost:8080/...
+POST http://localhost:8080/api/users
 Content-Type: application/json
 
 {
-  ...
+  "name": "Ej",
+  "email": "ej@gmail.com",
+  "role": "USER",
+  "password": "Passw0rd1"
 }
+
 
 ### Login
-
-... http://localhost:8080/...
+# @no-cookie-jar
+POST http://localhost:8080/api/users/me/session
 Content-Type: application/json
 
 {
-  ...
+  "email": "ej@gmail.com",
+  "password": "Passw0rd1"
 }
 
+
 ### Profile
-
-... http://localhost:8080/...
-Cookie: session=...
-
+GET http://localhost:8080/api/users/me
+Cookie: session=0a775fb9-605c-4950-a1eb-bbf726ac987a // Cambia en cada una

@@ -23,8 +23,9 @@ import java.util.Optional;
 @Service
 public class UserService implements UserServiceInterface {
     @Autowired
-    AppUserRepository appUserRepository; // es necesario para poder utilizar los métodos de AppUserRepository
-    TokenRepository tokenRepository; // es necesario para poder utilizar los métodos de TokenRepository
+    private AppUserRepository appUserRepository; // es necesario para poder utilizar los métodos de AppUserRepository
+    @Autowired
+    private TokenRepository tokenRepository; // es necesario para poder utilizar los métodos de TokenRepository
 
 
     /**
@@ -35,16 +36,21 @@ public class UserService implements UserServiceInterface {
      */
     @Override
     public Token login(String email, String password) {
+        //System.out.println("Login con email: '" + email + "' y contraseña: '" + password + "'");
 
         AppUser appUser = appUserRepository.findByEmail(email);
-        if ((appUser == null) || (!Objects.equals(appUser.password, password))) return null; // si las credenciales son incorrectas, retorna null
 
+        if ((appUser == null) || (!Objects.equals(appUser.password, password))) return null; // si las credenciales son incorrectas, retorna null
+        //System.out.println("ussuario encontrado: '" + appUser.email + "' y contraseña en BD: " + appUser.password);
 
         Token token = tokenRepository.findByAppUser(appUser);
         if (token != null) return token; // @return si las credenciales del usuario son correctas, retorna un token de sesión asociado a dicho usuario;
 
-        ///////////////////////token = new Token(); // guardar un nuevo Token en la base de datos si no existe uno previo asociado a ese appUser
-        return null;
+        // Crear nuevo token si no existe uno previo
+        Token token_nuevo = new Token();
+        token_nuevo.appUser = appUser;
+        tokenRepository.save(token_nuevo); // guardarlo
+        return token_nuevo;
     }
 
 

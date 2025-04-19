@@ -92,5 +92,10 @@ class P5ApplicationE2ETest {
         // Then ...
         Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
+        // Verificar que se devuelve una cookie de sesión
+        String setCookie = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
+        Assertions.assertNotNull(setCookie);
+        Assertions.assertTrue(setCookie.contains("session="));
+
     }
 }
