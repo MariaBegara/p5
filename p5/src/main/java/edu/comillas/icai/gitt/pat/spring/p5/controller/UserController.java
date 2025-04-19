@@ -50,7 +50,7 @@ public class UserController {
                 .path("/")
                 .sameSite("Strict")
                 .build();
-        return ResponseEntity.status(HttpStatus.CREATED).header(HttpHeaders.SET_COOKIE, session.toString()).build();
+        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.SET_COOKIE, session.toString()).build();
     }
 
     @DeleteMapping("/api/users/me/session")

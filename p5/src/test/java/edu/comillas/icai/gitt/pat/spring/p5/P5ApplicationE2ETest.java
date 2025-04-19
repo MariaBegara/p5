@@ -85,12 +85,12 @@ class P5ApplicationE2ETest {
 
         // When ...
         ResponseEntity<String> response = client.exchange(
-                "http://localhost:8080/api/users",
+                "http://localhost:8080/api/users/me/session",
                 HttpMethod.POST, new HttpEntity<>(login, headers), String.class);
 
 
         // Then ...
-        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 
         // Verificar que se devuelve una cookie de sesión
         String setCookie = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
