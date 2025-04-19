@@ -20,7 +20,7 @@ public class Token {
     public String id;
 
     @OneToOne // asociación uno a uno con la entidad AppUser
-    @JoinColumn(name="app_user_id", nullable  = false) // AÑADIR UNIQUE???????????????????????????????????????????
+    @JoinColumn(name="app_user_id", nullable  = false) // añadir unique?
     @OnDelete(action = OnDeleteAction.CASCADE) // en caso de que se borre el usuario, también se borre su sesión asociada
     public AppUser appUser;
 
