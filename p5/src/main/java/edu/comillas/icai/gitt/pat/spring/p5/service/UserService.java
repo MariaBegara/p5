@@ -2,6 +2,7 @@ package edu.comillas.icai.gitt.pat.spring.p5.service;
 
 import edu.comillas.icai.gitt.pat.spring.p5.entity.AppUser;
 import edu.comillas.icai.gitt.pat.spring.p5.entity.Token;
+import edu.comillas.icai.gitt.pat.spring.p5.util.Hashing;
 import edu.comillas.icai.gitt.pat.spring.p5.model.ProfileRequest;
 import edu.comillas.icai.gitt.pat.spring.p5.model.ProfileResponse;
 import edu.comillas.icai.gitt.pat.spring.p5.model.RegisterRequest;
@@ -27,7 +28,7 @@ public class UserService implements UserServiceInterface {
     @Autowired
     private TokenRepository tokenRepository; // es necesario para poder utilizar los métodos de TokenRepository
 
-
+    private final Hashing hashing = new Hashing();
     /**
      * @param email email proporcionado para el login
      * @param password password proporcionado para el login
@@ -36,11 +37,12 @@ public class UserService implements UserServiceInterface {
      */
     @Override
     public Token login(String email, String password) {
+
         //System.out.println("Login con email: '" + email + "' y contraseña: '" + password + "'");
 
         AppUser appUser = appUserRepository.findByEmail(email);
 
-        if ((appUser == null) || (!Objects.equals(appUser.password, password))) return null; // si las credenciales son incorrectas, retorna null
+        if ((appUser == null) || (!hashing.compare(appUser.password, password))) return null; // si las credenciales son incorrectas, retorna null
         //System.out.println("ussuario encontrado: '" + appUser.email + "' y contraseña en BD: " + appUser.password);
 
         Token token = tokenRepository.findByAppUser(appUser);
@@ -94,8 +96,8 @@ public class UserService implements UserServiceInterface {
             appUser.name = profile.name();
         }
 
-        if ((Objects.equals(appUser.name, profile.name())) && (!Objects.equals(appUser.password, profile.password()))) {
-            appUser.password = profile.password(); // Si el nombre coincide y se cambia la contraseña, esta se debe actualizar
+        if ((Objects.equals(appUser.name, profile.name())) && (!hashing.compare(appUser.password, profile.password()))) {
+            appUser.password = hashing.hash(profile.password()); // Si el nombre coincide y se cambia la contraseña, esta se debe actualizar -> hasheada
         }
 
         appUserRepository.save(appUser); // Se actualiza el usuario con el cambio realizado
@@ -112,9 +114,10 @@ public class UserService implements UserServiceInterface {
     public ProfileResponse profile(RegisterRequest register) {
         // register tiene todos los datos del usuario
         AppUser usuario = new AppUser();
+        String password_hashed = hashing.hash(register.password());
         usuario.name = register.name();
         usuario.email = register.email();
-        usuario.password = register.password();
+        usuario.password = password_hashed; // Se debe guardar hasheada
         usuario.role = register.role();
         appUserRepository.save(usuario);
 

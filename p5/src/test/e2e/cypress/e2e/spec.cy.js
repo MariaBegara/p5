@@ -23,6 +23,16 @@ describe('Registro y login', () => {
   // verificar que se realiza el login correctamente con el usuario
   // previamente registrado
   it('Login correcto', () => {
+    cy.visit('http://localhost:8080/login.html')
+    cy.get('[name="email"]').type(email)
+    cy.get('[name="email"]').should('have.value', email)
+    cy.get('[name="password"]').type(pass)
+    cy.get('[name="password"]').should('have.value', pass)
+    cy.contains('Entrar').click()
+    cy.url().should('include', '/app.html') // login.js
+
+    // Verificamos que el nombre del usuario se muestra en la página de perfil
+    cy.contains(`${name}`).should('exist')
 
   })
 })

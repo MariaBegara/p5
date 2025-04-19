@@ -7,7 +7,7 @@ function inicializar() {
 function entrar(datosJsonFormulario) {
   fetch('/api/users/me/session', {method: 'post', body: datosJsonFormulario, headers: {'content-type': 'application/json'}})
     .then(response => {
-      if (response.ok) location.href = 'app.html';
+      if (response.ok) location.href = 'app.html'; // TODO#13
       else mostrarAviso('✖︎ Credenciales incorrectas', 'error');
     });
 }

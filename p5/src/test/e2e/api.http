@@ -30,4 +30,4 @@ Content-Type: application/json
 
 ### Profile
 GET http://localhost:8080/api/users/me
-Cookie: session=0a775fb9-605c-4950-a1eb-bbf726ac987a // Cambia en cada una
+Cookie: session=30f5dbf1-9aab-4553-bc88-496d0e0ea8fc // Cambia en cada una
